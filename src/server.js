@@ -32,11 +32,11 @@ app.use(cookieParser());
 app.use(
   session({
     name: "ActOnIssue",
-    secret: "ActOnIssue_secrect",
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
     cookie: {
-      secure: false, // This will only work if you have https enabled!
+      secure: process.env.NODE_ENV==="production", // This will only work if you have https enabled!
       maxAge: 60000 * 120, // 2 hours
     },
   })
