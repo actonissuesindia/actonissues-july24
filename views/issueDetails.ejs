@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Documents</title>
+        <link href="/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/vendor/datatables/datatables.min.css" rel="stylesheet">
+        <link href="/css/master.css" rel="stylesheet">
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/vendor/datatables/datatables.min.js"></script>
+        <script src="/js/initiate-datatables.js"></script>
+        <script src="/js/form-validator.js"></script>
+        <script src="/js/script.js"></script>
+        <script>
+           function updateIssueStatus(id, status){
+                $("#issueId").val(id)
+                $("#status").val(status)
+                if(status == "approved"){
+                    $("#msg").html("Are you sure. Do you want to approve the Issue")
+                }else if(status == "rejected"){
+                    $("#msg").html("Are you sure. Do you want to reject the Issue")
+                } else if(status == "hot"){
+                    $("#msg").html("Are you sure. Do you want make Issue as hot Issue")
+                } else if(status == "unhot"){
+                    $("#msg").html("Are you sure. Do you want remove Issue as hot Issue")
+                }else {
+                    $("#msg").html("Are you sure. Do you want to resolve the Issue")
+                }
+           }
+
+           function deleteComment(id) {
+                $("#commentId").val(id)
+           }
+           function replyComment(id, issueId) {
+                $("#replyId").val(id)
+                $("#issuId").val(issueId)
+           }
+           function saveComment(issueId){
+            $("#issId").val(issueId)
+           }
+        </script>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            
+            <!-- // sidebar -->
+            <%- include('./sidebar.ejs'); %>
+            <div id="body" class="active">
+                <!-- header -->
+                <%- include('./header.ejs'); %>
+                <div class="content">
+                    <div class="container">
+                        <div class="page-title">
+                            <h3>Issue Details
+                                <!-- <a href="#" class="btn btn-sm btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getReqData()">Initiate Document</a> -->
+                            </h3>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card mb-3">
+                                <img class="card-img-top" src="<%= issue.images[0] %>" id="img" alt="Card image cap" height="500px">
+                                <div class="card-body">
+                                    <h5 class="card-title"><b>Title : </b> <%= issue.title %></h5>
+                                    <div class="row">
+                                    <div class="col-md-4">
+                                        <b class="col-md-4">Posted By : </b><span class="col-md-8"><%= issue.userId.name %></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b class="col-md-4">Address : </b><span class="col-md-8"><%= issue.address.label %></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b class="col-md-4">Posted At : </b><span class="col-md-8"><%= (issue.created_at).toLocaleString() %></span>
+                                    </div></div>
+                                    <p class="card-text"><b class="col-md-4">Description : </b> <%= issue.description %></p>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Comments 
+                                                        <a class="btn btn-outline-success btn-rounded" data-bs-toggle="modal" data-bs-target="#exampleModal3" onClick="saveComment(`<%= issue._id %>`)"><i class="fa fa-plus-circle"></i></a>
+                                                    </th>
+                                                    <th>Commented By</th>
+                                                    <th>replied on</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% for(let i= 0; i< comments.length; i++){ %>
+                                                <tr>
+                                                    <td><%= comments[i].comment %></td>
+                                                    <td><%= comments[i].userId.name %></td>
+                                                    <td><% if(comments[i].commentId) {%> <%= comments[i].commentId?.comment %>(<%= comments[i].commentId?.userId.name %>) <%}%></td>
+                                                    <td>
+                                                        <a class="btn btn-outline-success btn-rounded" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick="replyComment(`<%= comments[i]._id %>`, `<%= issue._id %>`)"><i class="fa fa-reply"></i></a>
+                                                        <a class="btn btn-outline-danger btn-rounded" data-bs-toggle="modal" data-bs-target="#exampleModal1" onClick="deleteComment(`<%= comments[i]._id %>`)"><i class="fa fa-trash"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div style="float: right;">
+                                        <% if(issue.status == "created") { %>
+                                        <a href="#" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="updateIssueStatus('<%= issue._id %>', 'approved')">Approve</a>
+                                        <a href="#" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="updateIssueStatus('<%= issue._id %>', 'rejected')">Reject</a>
+                                        <% } if(issue.status == "approved") { if(issue.isHotIssue) {%>
+                                        <a href="#" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="updateIssueStatus('<%= issue._id %>', 'unhot')">Remove As Hot Issue</a><%} else { %>
+                                            <a href="#" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="updateIssueStatus('<%= issue._id %>', 'hot')">Make Hot Issue</a> <%}%>
+                                        <a href="#" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="updateIssueStatus('<%= issue._id %>', 'resolved')">Resolve</a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Issue Status Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/updateIssueStatus">
+                        <div class="modal-body text-start">
+                           <input type="hidden" name="issueId" id="issueId" >
+                           <input type="hidden" name="status" id="status">
+                           <div id="msg"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Ok</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal1" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete comment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/deleteComment">
+                        <div class="modal-body text-start">
+                            <input type="hidden" name="commentId" id="commentId">
+                            <div id="msg">Are you sure. Do you want delete the comment</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal2" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reply Comment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/replyComment">
+                        <div class="modal-body text-start">
+                            <input type="hidden" name="issuId" id="issuId" >
+                            <input type="hidden" name="replyId" id="replyId">
+                            <textarea id="reply" name="reply" rows="4" cols="50" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Reply</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal3" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Comment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/createComment">
+                        <div class="modal-body text-start">
+                            <input type="hidden" name="issId" id="issId">
+                            <textarea id="comment" name="comment" rows="4" cols="50" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Categories</title>
+        <link href="/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/vendor/datatables/datatables.min.css" rel="stylesheet">
+        <link href="/css/master.css" rel="stylesheet">
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/vendor/datatables/datatables.min.js"></script>
+        <script src="/js/initiate-datatables.js"></script>
+        <script src="/js/form-validator.js"></script>
+        <script src="/js/script.js"></script>
+        <script>
+            $(document).ready(function(){
+                getCategories()
+            })
+            async function getCategories() {
+                try{
+                    let catRes= await fetch("/admin/getCategories");
+                    let cat = await catRes.json();
+                    let catObj= cat.data
+                    let category;
+                    for(let i= 0; i< catObj.length; i++) {
+                        let cls= catObj[i].status == "active" ? "btn btn-outline-danger btn-rounded" : "btn btn-outline-success btn-rounded"
+                        category += '<tr><td>'+catObj[i].name+'</td><td>'+catObj[i].status+'</td><td class="text-end"> <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2" onClick="updateVal(`'+catObj[i]._id+'`, `'+catObj[i].name+'`)" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a><a href="#" class="'+cls+'" data-bs-toggle="modal" data-bs-target="#exampleModal1" onClick="inactive(`'+catObj[i]._id+'`, `'+catObj[i].status+'`)"><i class="fas fa-trash"></i></a></td></tr>'
+                    }
+                    category ? $("tbody").empty().append(category) : ""
+                    $("#dataTables-example").DataTable().draw();
+                }catch(err){
+                    console.log(err)
+                }
+            }
+            function inactive(catId, status){
+                $("#categoryId").val(catId)
+                if(status == "active") {
+                    $("#modTitle").html("Inactivate Category")
+                    $("#msg").html("Are you sure. Do you want to inactivate the category?")
+                    $("#status").val("inactive")
+                } else {
+                    $("#modTitle").html("Activate Category")
+                    $("#msg").html("Are you sure. Do you want to activate the category?")
+                    $("#status").val("active")
+                }
+            }
+
+            function updateVal(catId, name) {
+                $("#catId").val(catId)
+                $("#categoryName").val(name)
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <!-- // sidebar -->
+            <%- include('./sidebar.ejs'); %>
+            <div id="body" class="active">
+                <!-- header -->
+                <%- include('./header.ejs'); %>
+                <div class="content">
+                    <div class="container">
+                        <div class="page-title">
+                            <h3>Categories 
+                                <a href="#" class="btn btn-sm btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal" >Create Category</a>
+                            </h3>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <table class="table table-striped" id="dataTables-example" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Category Name</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/createCategory">
+                        <div class="modal-body text-start">
+                            <div class="mb-3">
+                                <label for="Category" class="form-label">Category Name</label>
+                                <input type="text" name="categoryName" placeholder="Category Name" class="form-control" minlength="3" required>
+                                <div class="invalid-feedback">Please enter category name.</div>
+                            </div>
+                            <!-- <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="4"></textarea>
+                            </div> -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal2" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Update Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/updateCategory">
+                        <div class="modal-body text-start">
+                            <div class="mb-3">
+                                <input type="hidden" name="categorieId" id="catId">
+                                <label for="Category" class="form-label">Category Name</label>
+                                <input type="text" name="name" id="categoryName" placeholder="Category Name" class="form-control" minlength="3" required>
+                                <div class="invalid-feedback">Please enter category name.</div>
+                            </div>
+                            <!-- <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="4"></textarea>
+                            </div> -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal1" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/updateCategory">
+                        <div class="modal-body text-start" id="msg">
+                        </div>
+                        <input type="hidden" name="categoryId" id="categoryId">
+                        <input type="hidden" name="status" id="status">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

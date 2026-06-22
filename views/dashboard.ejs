@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Blank Page | Bootstrap Simple Admin Template</title>
+        <link href="/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/master.css" rel="stylesheet">
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/script.js"></script>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <!-- // sidebar -->
+            <%- include('./sidebar.ejs'); %>
+            <div id="body">
+                <!-- header -->
+                <%- include('./header.ejs'); %>
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="page-title">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                    <div class="card">
+                                        <div class="content">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="icon-big text-center">
+                                                        <i class="teal fas fa-user"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="detail">
+                                                        <p class="detail-subtitle">Active Users</p>
+                                                        <span class="number"><%= response.usersCount %></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="footer">
+                                                <hr />
+                                                <div class="stats">
+                                                    <i class="fas fa-calendar"></i> For this Week
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                    <div class="card">
+                                        <div class="content">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="icon-big text-center">
+                                                        <i class="blue fas fa-tasks"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="detail">
+                                                        <p class="detail-subtitle">New Issues</p>
+                                                        <span class="number"><%= response.createdIssuesCount %></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="footer">
+                                                <hr />
+                                                <div class="stats">
+                                                    <i class="fas fa-calendar"></i> For this Month
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                    <div class="card">
+                                        <div class="content">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="icon-big text-center">
+                                                        <i class="orange fas fa-tasks"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="detail">
+                                                        <p class="detail-subtitle">Active Issues</p>
+                                                        <span class="number"><%= response.activeIssuesCount %></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="footer">
+                                                <hr />
+                                                <div class="stats">
+                                                    <i class="fas fa-stopwatch"></i> For this Month
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                                    <div class="card">
+                                        <div class="content">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="icon-big text-center">
+                                                        <i class="olive fas fa-tasks"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="detail">
+                                                        <p class="detail-subtitle">Closed Issues</p>
+                                                        <span class="number"><%= response.resolvedIssuesCount %></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="footer">
+                                                <hr />
+                                                <div class="stats">
+                                                    <i class="fas fa-envelope-open-text"></i> For this week
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

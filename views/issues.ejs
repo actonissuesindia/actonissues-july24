@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Documents</title>
+        <link href="/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+        <link href="/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/vendor/datatables/datatables.min.css" rel="stylesheet">
+        <link href="/css/master.css" rel="stylesheet">
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/vendor/datatables/datatables.min.js"></script>
+        <script src="/js/initiate-datatables.js"></script>
+        <script src="/js/script.js"></script>
+        <script>
+            let issues= []
+            $(document).ready(function () {
+                getIssues()
+            })
+           
+
+            async function getIssues() {
+                try{
+                    let docRes= await fetch("/admin/getIssues");
+                    let doc = await docRes.json();
+                    let isuObj= doc.data
+                    issues= doc.data
+                    let isu;
+                    for(let i= 0; i< isuObj.length; i++) {
+                        isu += '<tr><td>'+isuObj[i].userId.name+'</td><td>'+isuObj[i].title.substring(0, 15) + '...'+'</td><td>'+isuObj[i].description.substring(0, 15) + '...'+'</td><td>'+isuObj[i].categoryId?.name+'</td><td>'+isuObj[i].status+'</td><td><a href="/admin/issueDetails/'+isuObj[i]._id+'" class="btn btn-outline-info btn-rounded"><i class="fas fa-eye"></i></a></td></tr>'
+                    }
+                    isu ? $("tbody").empty().append(isu) : "";
+                    $("#dataTables-example").DataTable().draw();
+                }catch(err){
+                    console.log(err)
+                }
+            }
+
+            function showIssue(id) {
+                for(let i= 0; i< issues.length; i++) {
+                    if(issues[i]._id == id) {
+                        $('#img').attr('src', "http://localhost:8000/issues/"+issues[i].images[0]);
+                    }
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <!-- // sidebar -->
+            <%- include('./sidebar.ejs'); %>
+            <div id="body" class="active">
+                <!-- header -->
+                <%- include('./header.ejs'); %>
+                <div class="content">
+                    <div class="container">
+                        <div class="page-title">
+                            <h3>Issues
+                                <!-- <a href="#" class="btn btn-sm btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="getReqData()">Initiate Document</a> -->
+                            </h3>
+                        </div>
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <table class="table table-striped" id="dataTables-example" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Created By</th>
+                                            <th>Issue Title</th>
+                                            <th>Issue Description</th>
+                                            <th>Issue Category</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" role="dialog" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Issue Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="needs-validation" novalidate accept-charset="utf-8" action="/admin/updateIssueStatus">
+                        <div class="modal-body text-start">
+                            <img src="" id="img" width="450px" height="300px">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

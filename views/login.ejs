@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login | Bootstrap Simple Admin Template</title>
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/auth.css" rel="stylesheet">
+    <style>
+        .error{
+            color: red;
+        }
+        input.error.fail-alert {
+            border: 2px solid red;
+            border-radius: 4px;
+            line-height: 1;
+            padding: 2px 0 6px 6px;
+            background: #ffe6eb;
+        }
+        input.valid.success-alert {
+            border: 2px solid #4CAF50;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4" style="color:#0d6efd; font-weight:600">
+                        Act On Issue
+                    </div>
+                    <!-- <h6 class="mb-4 text-muted">Login to your account</h6> -->
+                    <form action="" method="" id="loginForm">
+                        <div class="mb-3 text-start">
+                            <label for="email" class="form-label">Email adress</label>
+                            <input type="email" name="loginId" class="form-control" placeholder="Enter Email" required>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        </div>
+                        <!-- <div class="mb-3 text-start">
+                            <div class="form-check">
+                              <input class="form-check-input" name="remember" type="checkbox" value="" id="check1">
+                              <label class="form-check-label" for="check1">
+                                Remember me on this device
+                              </label>
+                            </div>
+                        </div> -->
+                        <button class="btn btn-primary shadow-2 mb-4" type="submit">Login</button>
+                    </form>
+                    <!-- <p class="mb-2 text-muted">Forgot password? <a href="forgot-password.html">Reset</a></p> -->
+                    <!-- <p class="mb-0 text-muted">Don't have account yet? <a href="signup.html">Signup</a></p> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"> </script>  
+<script>  
+$(document).ready (function () { 
+    $("#loginForm").validate ({
+        errorClass: "error fail-alert",
+        validClass: "valid success-alert",
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password: {
+                required: true,
+                minlength: 6,
+                maxlength: 15
+            }
+        },
+        messages : {
+            email: {
+                required: "Email field is required",
+                email: "The email should be valid format"
+            },
+            password: {
+                required: "Password field is required",
+                minlength: "Password length should be between 6 to 15",
+                maxlength: "Password length should be between 6 to 15"
+            }
+        },
+        submitHandler : function(form) {
+            $.ajax({
+            url: "/admin/login", 
+            type: "POST",             
+            data: $(form).serialize(),
+            dataType : 'json',    
+            success: function(data) {
+                $('#loading').hide();
+                $("#message").html(data);
+                window.location.href = "/admin/dashboard";
+            }
+        });
+        return false;
+        }
+    })
+});  
+</script>
+</body>
+
+</html>
